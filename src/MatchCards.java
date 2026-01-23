@@ -54,6 +54,7 @@ public class MatchCards {
     JButton restartButton = new JButton();
 
     int errorCount = 0;
+    int pairCount = 0;
 
     ArrayList<JButton> board;
     Timer hideCardTimer;
@@ -74,7 +75,7 @@ public class MatchCards {
 
         textLabel.setFont(new Font("Arial", Font.PLAIN, 20));
         textLabel.setHorizontalAlignment(JLabel.CENTER);
-        textLabel.setText("Errors: " + errorCount);
+        textLabel.setText("Errors: " + errorCount + "   Pairs: " + pairCount);
 
         textPanel.setPreferredSize(new Dimension(boardWidth, 30));
         textPanel.add(textLabel);
@@ -112,7 +113,8 @@ public class MatchCards {
                 }
 
                 errorCount = 0;
-                textLabel.setText("Errors: " + errorCount);
+                pairCount = 0;
+                textLabel.setText("Errors: " + errorCount + "   Pairs: " + pairCount);
                 hideCardTimer.start();
             }
         });
@@ -161,13 +163,15 @@ public class MatchCards {
 
                         if(card1Selected.getIcon() != card2Selected.getIcon()) {
                             errorCount += 1;
-                            textLabel.setText("Errors: " + errorCount);
+
                             hideCardTimer.start();
                         }
                         else {
+                            pairCount += 1;
                             card1Selected = null;
                             card2Selected = null;
                         }
+                        textLabel.setText("Errors: " + errorCount + "   Pairs: " + pairCount);
                     }
                 }
 
