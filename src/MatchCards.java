@@ -99,23 +99,7 @@ public class MatchCards {
         restartButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!gameReady) {
-                    return;
-                }
-
-                gameReady = false;
-                restartButton.setEnabled(false);
-                card1Selected = null;
-                card2Selected = null;
-                shuffleCards();
-                for (int i = 0; i < board.size(); i++) {
-                    board.get(i).setIcon(cardSet.get(i).cardImageIcon);
-                }
-
-                errorCount = 0;
-                pairCount = 0;
-                textLabel.setText("Errors: " + errorCount + "   Pairs: " + pairCount);
-                hideCardTimer.start();
+                restartGame();
             }
         });
         restartGamePanel.add(restartButton);
@@ -163,13 +147,22 @@ public class MatchCards {
 
                         if(card1Selected.getIcon() != card2Selected.getIcon()) {
                             errorCount += 1;
-
+                            // lost
+                            if (errorCount == 10) {
+                                textLabel.setText("U LOOOST");
+                                return;
+                            }
                             hideCardTimer.start();
+
                         }
                         else {
                             pairCount += 1;
                             card1Selected = null;
                             card2Selected = null;
+                            if (pairCount == 10) {
+                                textLabel.setText("U WOOON");
+                                return;
+                            }
                         }
                         textLabel.setText("Errors: " + errorCount + "   Pairs: " + pairCount);
                     }
@@ -222,5 +215,24 @@ public class MatchCards {
             gameReady = true;
             restartButton.setEnabled(true);
         }
+    }
+
+    void restartGame(){
+        if (!gameReady) {
+            return;
+        }
+        gameReady = false;
+        restartButton.setEnabled(false);
+        card1Selected = null;
+        card2Selected = null;
+        shuffleCards();
+        for (int i = 0; i < board.size(); i++) {
+            board.get(i).setIcon(cardSet.get(i).cardImageIcon);
+        }
+
+        errorCount = 0;
+        pairCount = 0;
+        textLabel.setText("Errors: " + errorCount + "   Pairs: " + pairCount);
+        hideCardTimer.start();
     }
 }
