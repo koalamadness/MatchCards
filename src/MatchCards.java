@@ -75,7 +75,7 @@ public class MatchCards {
 
         textLabel.setFont(new Font("Arial", Font.PLAIN, 20));
         textLabel.setHorizontalAlignment(JLabel.CENTER);
-        textLabel.setText("Errors: " + errorCount + "   Pairs: " + pairCount);
+        printTextLabel();
 
         textPanel.setPreferredSize(new Dimension(boardWidth, 30));
         textPanel.add(textLabel);
@@ -96,12 +96,7 @@ public class MatchCards {
         restartButton.setPreferredSize(new Dimension(boardWidth, 30));
         restartButton.setFocusable(false);
         restartButton.setEnabled(false);
-        restartButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                restartGame();
-            }
-        });
+        restartButton.addActionListener(e -> restartGame());
         restartGamePanel.add(restartButton);
         frame.add(restartGamePanel, BorderLayout.SOUTH);
 
@@ -109,12 +104,7 @@ public class MatchCards {
         frame.setVisible(true);
 
         //start game
-        hideCardTimer = new Timer(1500, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                hideCards();
-            }
-        });
+        hideCardTimer = new Timer(1500, e -> hideCards());
 
         hideCardTimer.setRepeats(false);
         hideCardTimer.start();
@@ -127,48 +117,45 @@ public class MatchCards {
         tile.setIcon(card.cardImageIcon);
         tile.setFocusable(false);
 
-        tile.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (!gameReady) {
-                    return;
-                }
-                JButton tile = (JButton) e.getSource();
-                if (tile.getIcon() == cardBackImageIcon) {
-                    if (card1Selected == null) {
-                        card1Selected = tile;
-                        int index = board.indexOf(card1Selected);
-                        card1Selected.setIcon(cardSet.get(index).cardImageIcon);
-                    }
-                    else if (card2Selected == null) {
-                        card2Selected = tile;
-                        int index = board.indexOf(card2Selected);
-                        card2Selected.setIcon(cardSet.get(index).cardImageIcon);
-
-                        if(card1Selected.getIcon() != card2Selected.getIcon()) {
-                            errorCount += 1;
-                            // lost
-                            if (errorCount == 10) {
-                                textLabel.setText("U LOOOST");
-                                return;
-                            }
-                            hideCardTimer.start();
-
-                        }
-                        else {
-                            pairCount += 1;
-                            card1Selected = null;
-                            card2Selected = null;
-                            if (pairCount == 10) {
-                                textLabel.setText("U WOOON");
-                                return;
-                            }
-                        }
-                        textLabel.setText("Errors: " + errorCount + "   Pairs: " + pairCount);
-                    }
-                }
-
+        tile.addActionListener(e -> {
+            if (!gameReady) {
+                return;
             }
+            JButton tile1 = (JButton) e.getSource();
+            if (tile1.getIcon() == cardBackImageIcon) {
+                if (card1Selected == null) {
+                    card1Selected = tile1;
+                    int index = board.indexOf(card1Selected);
+                    card1Selected.setIcon(cardSet.get(index).cardImageIcon);
+                }
+                else if (card2Selected == null) {
+                    card2Selected = tile1;
+                    int index = board.indexOf(card2Selected);
+                    card2Selected.setIcon(cardSet.get(index).cardImageIcon);
+
+                    if(card1Selected.getIcon() != card2Selected.getIcon()) {
+                        errorCount += 1;
+                        // lost
+                        if (errorCount == 10) {
+                            textLabel.setText("U LOOOST");
+                            return;
+                        }
+                        hideCardTimer.start();
+
+                    }
+                    else {
+                        pairCount += 1;
+                        card1Selected = null;
+                        card2Selected = null;
+                        if (pairCount == 10) {
+                            textLabel.setText("U WOOON");
+                            return;
+                        }
+                    }
+                    printTextLabel();
+                }
+            }
+
         });
         return tile;
     }
@@ -232,7 +219,11 @@ public class MatchCards {
 
         errorCount = 0;
         pairCount = 0;
-        textLabel.setText("Errors: " + errorCount + "   Pairs: " + pairCount);
+        printTextLabel();
         hideCardTimer.start();
+    }
+
+    void printTextLabel() {
+        textLabel.setText("Errors: " + errorCount + "   Pairs: " + pairCount);
     }
 }
