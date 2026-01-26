@@ -33,11 +33,14 @@ public class MatchCards {
             "water"
     };
 
-
     int rows = 4;
     int columns = 5;
     int cardWidth = 90;
     int cardHeight = 128;
+
+    boolean turnPlayerOne = true;
+    int playerOneScore = 0;
+    int playerTwoScore = 0;
 
     ArrayList<Card> cardSet;
     ImageIcon cardBackImageIcon;
@@ -133,8 +136,13 @@ public class MatchCards {
                     int index = board.indexOf(card2Selected);
                     card2Selected.setIcon(cardSet.get(index).cardImageIcon);
 
+                    //WRONG
                     if(card1Selected.getIcon() != card2Selected.getIcon()) {
+
                         errorCount += 1;
+
+                        turnPlayerOne = !turnPlayerOne;
+
                         // lost
                         if (errorCount == 10) {
                             textLabel.setText("U LOOOST");
@@ -144,9 +152,17 @@ public class MatchCards {
 
                     }
                     else {
-                        pairCount += 1;
+                        //pairCount += 1;
+
+                        if (turnPlayerOne) {
+                            playerOneScore += 1;
+                        } else {
+                            playerTwoScore += 1;
+                        }
+
                         card1Selected = null;
                         card2Selected = null;
+
                         if (pairCount == 10) {
                             textLabel.setText("U WOOON");
                             return;
@@ -219,11 +235,20 @@ public class MatchCards {
 
         errorCount = 0;
         pairCount = 0;
+        playerOneScore = 0;
+        playerTwoScore = 0;
+        turnPlayerOne = true;
+
         printTextLabel();
         hideCardTimer.start();
     }
 
     void printTextLabel() {
-        textLabel.setText("Errors: " + errorCount + "   Pairs: " + pairCount);
+        if (turnPlayerOne) {
+            textLabel.setText("Player 1 Errors: " + errorCount + " P1: " + playerOneScore + " P2: " + playerTwoScore);
+        }
+        else {
+            textLabel.setText("Player 2 Errors: " + errorCount + " P1: " + playerOneScore + " P2: " + playerTwoScore);
+        }
     }
 }
