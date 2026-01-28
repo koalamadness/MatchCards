@@ -66,6 +66,10 @@ public class MatchCards {
     JButton card1Selected;
     JButton card2Selected;
 
+
+    Timer turnTimer;
+    int timeLeft = 15;
+
     MatchCards() {
         setupCards();
         shuffleCards();
@@ -106,6 +110,16 @@ public class MatchCards {
         frame.pack();
         frame.setVisible(true);
 
+        turnTimer = new Timer(1000, e ->{
+            timeLeft--;
+
+            if (timeLeft <= 0){
+                changeTurn();
+            }
+
+            printTextLabel();
+        });
+
         //start game
         hideCardTimer = new Timer(1500, e -> hideCards());
 
@@ -141,7 +155,7 @@ public class MatchCards {
 
                         errorCount += 1;
 
-                        turnPlayerOne = !turnPlayerOne;
+                        changeTurn();
 
                         // lost
                         if (errorCount == 10) {
@@ -217,6 +231,8 @@ public class MatchCards {
             }
             gameReady = true;
             restartButton.setEnabled(true);
+            timeLeft = 15;
+            turnTimer.start();
         }
     }
 
@@ -238,17 +254,28 @@ public class MatchCards {
         playerOneScore = 0;
         playerTwoScore = 0;
         turnPlayerOne = true;
-
+        turnTimer.stop();
+        timeLeft = 15;
         printTextLabel();
         hideCardTimer.start();
     }
 
     void printTextLabel() {
-        if (turnPlayerOne) {
-            textLabel.setText("Player 1 Errors: " + errorCount + " P1: " + playerOneScore + " P2: " + playerTwoScore);
-        }
-        else {
-            textLabel.setText("Player 2 Errors: " + errorCount + " P1: " + playerOneScore + " P2: " + playerTwoScore);
-        }
+        String currentPlayer = turnPlayerOne ? "Player 1" : "Player 2";
+
+        textLabel.setText(
+                currentPlayer +
+                        " | Time: " + timeLeft +
+                        "s | Errors: " + errorCount +
+                        " | P1: " + playerOneScore +
+                        " P2: " + playerTwoScore
+        );
+    }
+
+    void changeTurn() {
+        turnTimer.stop();
+        timeLeft = 15;
+        turnPlayerOne = !turnPlayerOne;
+        turnTimer.start();
     }
 }
