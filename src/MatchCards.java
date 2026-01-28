@@ -162,6 +162,7 @@ public class MatchCards {
                             textLabel.setText("U LOOOST");
                             return;
                         }
+
                         hideCardTimer.start();
 
                     }
@@ -273,6 +274,13 @@ public class MatchCards {
     }
 
     void changeTurn() {
+
+        // Solo una carta abierta → se tapa
+        if (card1Selected != null && card2Selected == null) {
+            card1Selected.setIcon(cardBackImageIcon);
+            card1Selected = null;
+        }
+
         turnTimer.stop();
         timeLeft = 15;
         turnPlayerOne = !turnPlayerOne;
