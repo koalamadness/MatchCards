@@ -5,6 +5,7 @@ import java.util.Objects;
 import javax.swing.*;
 
 import javax.sound.sampled.*;
+import javax.swing.border.Border;
 import java.io.File;
 import java.io.IOException;
 
@@ -150,16 +151,19 @@ public class MatchCards {
                     card1Selected = tile1;
                     int index = board.indexOf(card1Selected);
                     card1Selected.setIcon(cardSet.get(index).cardImageIcon);
+
                 }
                 else if (card2Selected == null) {
                     card2Selected = tile1;
                     int index = board.indexOf(card2Selected);
                     card2Selected.setIcon(cardSet.get(index).cardImageIcon);
 
+
                     //WRONG
                     if(card1Selected.getIcon() != card2Selected.getIcon()) {
 
                         errorCount += 1;
+                        animateError(card1Selected, card2Selected);
                         playSound("mixkit-wrong-answer-fail-notification-946.wav");
                         changeTurn();
 
@@ -176,6 +180,7 @@ public class MatchCards {
                     else {
                         //pairCount += 1;
 
+                        animatePair(card1Selected, card2Selected);
                         if (turnPlayerOne) {
                             playerOneScore += 1;
                         } else {
@@ -323,4 +328,31 @@ public class MatchCards {
             button.setEnabled(enabled);
         }
     }
+
+    void animateError(JButton c1, JButton c2) {
+        Border red = BorderFactory.createLineBorder(Color.RED, 3);
+        Border normal = UIManager.getBorder("Button.border");
+
+        c1.setBorder(red);
+        c2.setBorder(red);
+
+        new Timer(600, e -> {
+            c1.setBorder(normal);
+            c2.setBorder(normal);
+        }).start();
+    }
+
+    void animatePair(JButton c1, JButton c2) {
+        Border green = BorderFactory.createLineBorder(Color.GREEN, 3);
+        Border normal = UIManager.getBorder("Button.border");
+
+        c1.setBorder(green);
+        c2.setBorder(green);
+
+        new Timer(500, e -> {
+            c1.setBorder(normal);
+            c2.setBorder(normal);
+        }).start();
+    }
+
 }
