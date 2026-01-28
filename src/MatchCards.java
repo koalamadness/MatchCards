@@ -192,6 +192,10 @@ public class MatchCards {
                             playSound("mixkit-game-level-completed-2059.wav");
                             textLabel.setText("U WOOON");
                             turnTimer.stop();
+
+
+                            setBoardEnabled(false); // 👈 BLOQUEA CARTAS
+                            gameReady = false;
                             return;
                         }
                     }
@@ -251,9 +255,8 @@ public class MatchCards {
     }
 
     void restartGame(){
-        if (!gameReady) {
-            return;
-        }
+
+        setBoardEnabled(true);
         gameReady = false;
         restartButton.setEnabled(false);
         card1Selected = null;
@@ -312,6 +315,12 @@ public class MatchCards {
             clip.start();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    void setBoardEnabled(boolean enabled) {
+        for (JButton button : board) {
+            button.setEnabled(enabled);
         }
     }
 }
