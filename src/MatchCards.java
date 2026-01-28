@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.Objects;
 import javax.swing.*;
 
+import javax.sound.sampled.*;
+import java.io.File;
+import java.io.IOException;
+
 public class MatchCards {
 
     static class Card {
@@ -37,6 +41,8 @@ public class MatchCards {
     int columns = 5;
     int cardWidth = 90;
     int cardHeight = 128;
+
+ // más negativo = más bajo
 
     boolean turnPlayerOne = true;
     int playerOneScore = 0;
@@ -154,11 +160,12 @@ public class MatchCards {
                     if(card1Selected.getIcon() != card2Selected.getIcon()) {
 
                         errorCount += 1;
-
+                        playSound("mixkit-wrong-answer-fail-notification-946.wav");
                         changeTurn();
 
                         // lost
                         if (errorCount == 10) {
+                            playSound("mixkit-horror-lose-2028.wav");
                             textLabel.setText("U LOOOST");
                             return;
                         }
@@ -175,11 +182,16 @@ public class MatchCards {
                             playerTwoScore += 1;
                         }
 
+                        playSound("mixkit-quick-win-video-game-notification-269.wav");
+
+
                         card1Selected = null;
                         card2Selected = null;
 
-                        if (pairCount == 10) {
+                        if (playerOneScore == 6 || playerTwoScore == 6) {
+                            playSound("mixkit-game-level-completed-2059.wav");
                             textLabel.setText("U WOOON");
+                            turnTimer.stop();
                             return;
                         }
                     }
@@ -246,6 +258,7 @@ public class MatchCards {
         restartButton.setEnabled(false);
         card1Selected = null;
         card2Selected = null;
+        playSound("mixkit-failure-arcade-alert-notification-240.wav");
         shuffleCards();
         for (int i = 0; i < board.size(); i++) {
             board.get(i).setIcon(cardSet.get(i).cardImageIcon);
@@ -286,5 +299,19 @@ public class MatchCards {
         timeLeft = 15;
         turnPlayerOne = !turnPlayerOne;
         turnTimer.start();
+    }
+
+    void playSound(String soundFileName) {
+        try {
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(
+                    Objects.requireNonNull(getClass().getResource("./sounds/" + soundFileName))
+            );
+            Clip clip = AudioSystem.getClip();
+
+            clip.open(audioStream);
+            clip.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
