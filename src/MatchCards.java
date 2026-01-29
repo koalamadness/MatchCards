@@ -1,13 +1,12 @@
 import java.awt.*;
-import java.awt.event.*;
+
 import java.util.ArrayList;
 import java.util.Objects;
 import javax.swing.*;
 
 import javax.sound.sampled.*;
 import javax.swing.border.Border;
-import java.io.File;
-import java.io.IOException;
+
 
 public class MatchCards {
 
@@ -60,6 +59,8 @@ public class MatchCards {
     JPanel textPanel = new JPanel();
     JPanel boardPanel = new JPanel();
 
+    JLabel gameLabel = new JLabel();
+
     JPanel restartGamePanel = new JPanel();
     JButton restartButton = new JButton();
 
@@ -87,12 +88,22 @@ public class MatchCards {
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        // PANEL DE TEXTO ARRIBA
+        textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
+        textPanel.setPreferredSize(new Dimension(boardWidth, 55));
+
+// Label principal
         textLabel.setFont(new Font("Arial", Font.PLAIN, 20));
-        textLabel.setHorizontalAlignment(JLabel.CENTER);
+        textLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         printTextLabel();
 
-        textPanel.setPreferredSize(new Dimension(boardWidth, 30));
+// Label inferior
+        gameLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        gameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
         textPanel.add(textLabel);
+        textPanel.add(gameLabel);
+
         frame.add(textPanel, BorderLayout.NORTH);
 
         board = new ArrayList<>();
@@ -110,14 +121,14 @@ public class MatchCards {
         restartButton.setPreferredSize(new Dimension(boardWidth, 30));
         restartButton.setFocusable(false);
         restartButton.setEnabled(false);
-        restartButton.addActionListener(e -> restartGame());
+        restartButton.addActionListener(_ -> restartGame());
         restartGamePanel.add(restartButton);
         frame.add(restartGamePanel, BorderLayout.SOUTH);
 
         frame.pack();
         frame.setVisible(true);
 
-        turnTimer = new Timer(1000, e ->{
+        turnTimer = new Timer(1000, _ ->{
             timeLeft--;
 
             if (timeLeft <= 0){
@@ -128,7 +139,7 @@ public class MatchCards {
         });
 
         //start game
-        hideCardTimer = new Timer(1500, e -> hideCards());
+        hideCardTimer = new Timer(1500, _ -> hideCards());
 
         hideCardTimer.setRepeats(false);
         hideCardTimer.start();
@@ -286,6 +297,8 @@ public class MatchCards {
     void printTextLabel() {
         String currentPlayer = turnPlayerOne ? "Player 1" : "Player 2";
 
+        gameLabel.setText("Mari");
+
         textLabel.setText(
                 currentPlayer +
                         " | Time: " + timeLeft +
@@ -336,7 +349,7 @@ public class MatchCards {
         c1.setBorder(red);
         c2.setBorder(red);
 
-        new Timer(600, e -> {
+        new Timer(600, _ -> {
             c1.setBorder(normal);
             c2.setBorder(normal);
         }).start();
@@ -349,7 +362,7 @@ public class MatchCards {
         c1.setBorder(green);
         c2.setBorder(green);
 
-        new Timer(500, e -> {
+        new Timer(500, _ -> {
             c1.setBorder(normal);
             c2.setBorder(normal);
         }).start();
